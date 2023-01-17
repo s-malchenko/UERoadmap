@@ -88,7 +88,17 @@ void UTP_WeaponComponent::Reload()
 		return;
 	}
 
-	AmmoLeft += Inventory->RemoveAmmo(ClipCapacity - AmmoLeft);
+	const int32 AmmoAdded = Inventory->RemoveAmmo(ClipCapacity - AmmoLeft);
+
+	if (AmmoAdded > 0)
+	{
+		AmmoLeft += AmmoAdded;
+
+		if (ReloadSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, Character->GetActorLocation());
+		}
+	}
 }
 
 void UTP_WeaponComponent::BeginPlay()
