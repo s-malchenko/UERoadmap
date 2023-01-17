@@ -4,6 +4,7 @@
 #include "TP_WeaponComponent.h"
 #include "UERoadmapCharacter.h"
 #include "UERoadmapProjectile.h"
+#include "InventoryComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -51,9 +52,10 @@ void UTP_WeaponComponent::Fire()
 
 			// Spawn the projectile at the muzzle
 			World->SpawnActor<AUERoadmapProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			--AmmoLeft;
 		}
 	}
+
+	--AmmoLeft;
 
 	// Try and play the sound if specified
 	if (FireSound != nullptr)
@@ -75,16 +77,23 @@ void UTP_WeaponComponent::Fire()
 
 void UTP_WeaponComponent::Reload()
 {
-	if (AmmoLeft == ClipCapacity)
+	if (AmmoLeft == ClipCapacity || !Character)
 	{
 		return;
 	}
 
-	AmmoLeft = ClipCapacity;
+	UInventoryComponent* Inventory = Character->GetInventoryComponent();
+	if (!Inventory)
+	{
+		return;
+	}
+
+	AmmoLeft += Inventory->RemoveAmmo(ClipCapacity - AmmoLeft);
 }
 
 void UTP_WeaponComponent::BeginPlay()
 {
+	Super::BeginPlay();
 	AmmoLeft = ClipCapacity;
 }
 

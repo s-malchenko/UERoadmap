@@ -1,6 +1,18 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "TP_PickUpComponent.h"
+#include "Kismet/GameplayStatics.h"
+
+void UTP_PickUpComponent::Disable()
+{
+	// Unregister from the Overlap Event so it is no longer triggered
+	OnComponentBeginOverlap.RemoveAll(this);
+}
+
+void UTP_PickUpComponent::PlayPickUpSound()
+{
+	UGameplayStatics::PlaySoundAtLocation(this, PickUpSound, GetOwner()->GetActorLocation());
+}
 
 UTP_PickUpComponent::UTP_PickUpComponent()
 {
@@ -25,7 +37,14 @@ void UTP_PickUpComponent::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedCo
 		// Notify that the actor is being picked up
 		OnPickUp.Broadcast(Character);
 
-		// Unregister from the Overlap Event so it is no longer triggered
-		OnComponentBeginOverlap.RemoveAll(this);
+		if (bShouldPlaySound && PickUpSound)
+		{
+			PlayPickUpSound();
+		}
+
+		if (bDisableOnPickUp)
+		{
+			Disable();
+		}
 	}
 }

@@ -8,6 +8,7 @@
 #include "UERoadmapCharacter.generated.h"
 
 class UInputComponent;
+class UInventoryComponent;
 class USkeletalMeshComponent;
 class USceneComponent;
 class UCameraComponent;
@@ -39,7 +40,9 @@ class AUERoadmapCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
 
-	
+	UPROPERTY(VisibleDefaultsOnly, Category=Gameplay)
+	UInventoryComponent* InventoryComponent;
+
 public:
 	AUERoadmapCharacter();
 
@@ -47,7 +50,10 @@ protected:
 	virtual void BeginPlay();
 
 public:
-		
+	/** Inventory class */
+	UPROPERTY(EditDefaultsOnly, Category=Gameplay)
+	TSubclassOf<UInventoryComponent> InventoryComponentClass;
+
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
@@ -63,6 +69,9 @@ public:
 	/** Getter for the bool */
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	bool GetHasRifle();
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
 
 protected:
 	/** Called for movement input */
@@ -81,7 +90,5 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
-
 };
 

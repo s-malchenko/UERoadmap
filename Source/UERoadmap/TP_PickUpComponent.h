@@ -17,10 +17,29 @@ class UEROADMAP_API UTP_PickUpComponent : public USphereComponent
 	GENERATED_BODY()
 
 public:
-	
+
 	/** Delegate to whom anyone can subscribe to receive this event */
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnPickUp OnPickUp;
+
+	/** Auto disable on first pickup */
+	UPROPERTY(EditAnywhere, Category="Interaction")
+	bool bDisableOnPickUp = true;
+
+	/** Play pick up sound automatically */
+	UPROPERTY(EditAnywhere, Category="Interaction")
+	bool bShouldPlaySound = true;
+
+	/** Sound to play while attempting to fire empty weapon */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction")
+	USoundBase* PickUpSound;
+
+	/** Disable this component*/
+	UFUNCTION(BlueprintCallable, Category="Interaction")
+	void Disable();
+
+	UFUNCTION(BlueprintCallable, Category="Interaction")
+	void PlayPickUpSound();
 
 	UTP_PickUpComponent();
 protected:
