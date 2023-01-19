@@ -2,9 +2,10 @@
 
 #include "UERoadmapProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 
-AUERoadmapProjectile::AUERoadmapProjectile() 
+AUERoadmapProjectile::AUERoadmapProjectile()
 {
 	// Use a sphere as a simple collision representation
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
@@ -34,9 +35,21 @@ AUERoadmapProjectile::AUERoadmapProjectile()
 void AUERoadmapProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	if ((OtherActor != nullptr) && (OtherActor != this))
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+		if ((OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+		{
+			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+		}
+
+		auto* MyOwner = GetOwner();
+		UGameplayStatics::ApplyDamage(
+			OtherActor,
+			Damage,
+			MyOwner ? MyOwner->GetInstigatorController() : nullptr,
+			this,
+			UDamageType::StaticClass()
+		);
 
 		Destroy();
 	}

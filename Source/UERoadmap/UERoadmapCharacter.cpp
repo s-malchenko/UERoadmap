@@ -50,7 +50,11 @@ void AUERoadmapCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+}
 
+void AUERoadmapCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 	if (InventoryComponentClass)
 	{
 		InventoryComponent = NewObject<UInventoryComponent>(this, InventoryComponentClass, TEXT("Inventory"));

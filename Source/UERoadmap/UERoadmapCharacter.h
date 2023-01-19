@@ -47,7 +47,8 @@ public:
 	AUERoadmapCharacter();
 
 protected:
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
 public:
 	/** Inventory class */
