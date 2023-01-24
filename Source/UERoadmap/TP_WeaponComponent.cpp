@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "TimerManager.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -20,7 +21,9 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 
 void UTP_WeaponComponent::Fire()
 {
-	if (Character == nullptr || Character->GetController() == nullptr)
+	if (Character == nullptr
+		|| Character->GetController() == nullptr
+		|| IsReloading())
 	{
 		return;
 	}
@@ -57,12 +60,6 @@ void UTP_WeaponComponent::Fire()
 
 	--AmmoLeft;
 
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
-	}
-
 	// Try and play a firing animation if specified
 	if (FireAnimation != nullptr)
 	{
@@ -83,21 +80,37 @@ void UTP_WeaponComponent::Reload()
 	}
 
 	UInventoryComponent* Inventory = Character->GetInventoryComponent();
-	if (!Inventory)
+	if (!Inventory || Inventory->GetStoredAmmo() == 0)
 	{
 		return;
 	}
 
-	const int32 AmmoAdded = Inventory->RemoveAmmo(ClipCapacity - AmmoLeft);
+	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
 
-	if (AmmoAdded > 0)
+	if (IsReloading())
 	{
-		AmmoLeft += AmmoAdded;
+		return;
+	}
 
-		if (ReloadSound != nullptr)
+	float ReloadTime = 0;
+
+	if (ReloadAnimation != nullptr)
+	{
+		// Get the animation object for the arms mesh
+		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
+		if (AnimInstance != nullptr)
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, Character->GetActorLocation());
+			ReloadTime = AnimInstance->Montage_Play(ReloadAnimation, 1.f, EMontagePlayReturnType::Duration);
 		}
+	}
+
+	if (ReloadTime > 0)
+	{
+		TimerManager.SetTimer(ReloadTimer, this, &UTP_WeaponComponent::OnReloaded, ReloadTime);
+	}
+	else
+	{
+		OnReloaded();
 	}
 }
 
@@ -153,4 +166,14 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}
 	}
+}
+
+void UTP_WeaponComponent::OnReloaded()
+{
+	AmmoLeft += Character->GetInventoryComponent()->RemoveAmmo(ClipCapacity - AmmoLeft);
+}
+
+bool UTP_WeaponComponent::IsReloading() const
+{
+    return GetWorld()->GetTimerManager().IsTimerActive(ReloadTimer);
 }
