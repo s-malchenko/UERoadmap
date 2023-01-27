@@ -34,8 +34,8 @@ void UHealthComponent::TakeDamage(AActor *DamagedActor, float Damage, const UDam
 		return;
 	}
 
-
 	Health -= Damage;
+	OnDamageTaken.Broadcast();
 }
 
 float UHealthComponent::GetHealth() const

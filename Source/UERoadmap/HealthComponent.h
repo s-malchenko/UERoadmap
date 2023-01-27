@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+// Delegate that will be called when actual damage is taken
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDamageTaken);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UEROADMAP_API UHealthComponent : public UActorComponent
@@ -21,6 +23,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() const;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDamageTaken OnDamageTaken;
 
 protected:
 	// Called when the game starts
