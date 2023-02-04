@@ -59,6 +59,7 @@ void UTP_WeaponComponent::Fire()
 	}
 
 	--AmmoLeft;
+	OnClipAmmoChanged.Broadcast(AmmoLeft);
 
 	// Try and play a firing animation if specified
 	if (FireAnimation != nullptr)
@@ -118,6 +119,7 @@ void UTP_WeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	AmmoLeft = ClipCapacity;
+	OnClipAmmoChanged.Broadcast(AmmoLeft);
 }
 
 void UTP_WeaponComponent::AttachWeapon(AUERoadmapCharacter* TargetCharacter)
@@ -150,6 +152,9 @@ void UTP_WeaponComponent::AttachWeapon(AUERoadmapCharacter* TargetCharacter)
 			EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Reload);
 		}
 	}
+
+	OnClipAmmoChanged.AddDynamic(Character, &AUERoadmapCharacter::ClipAmmoDelegate);
+	OnClipAmmoChanged.Broadcast(AmmoLeft);
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

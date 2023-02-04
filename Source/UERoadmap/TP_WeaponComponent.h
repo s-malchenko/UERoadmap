@@ -8,6 +8,8 @@
 
 class AUERoadmapCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClipAmmoChanged, int32, ClipAmmo);
+
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UEROADMAP_API UTP_WeaponComponent : public USkeletalMeshComponent
 {
@@ -40,6 +42,9 @@ public:
 	/** Gun muzzle's offset from the characters location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	FVector MuzzleOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	FOnClipAmmoChanged OnClipAmmoChanged;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -78,10 +83,10 @@ protected:
 	void OnReloaded();
 
 private:
+	bool IsReloading() const;
+
 	/** The Character holding this weapon*/
 	AUERoadmapCharacter* Character;
-
-	bool IsReloading() const;
 
 	FTimerHandle ReloadTimer;
 };

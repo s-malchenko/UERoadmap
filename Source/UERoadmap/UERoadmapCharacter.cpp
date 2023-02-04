@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "UERoadmapCharacter.h"
+
 #include "InventoryComponent.h"
 #include "UERoadmapProjectile.h"
 #include "Animation/AnimInstance.h"
@@ -8,10 +9,46 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-
+#include "RoadmapPlayerController.h"
+#include "UI/RoadmapHUD.h"
+#include "UI/AmmoWidget.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AUERoadmapCharacter
+
+void AUERoadmapCharacter::InventoryAmmoDelegate(int32 AmmoLeft, int32 AmmoDelta)
+{
+	if (!PlayerController)
+	{
+		return;
+	}
+
+	URoadmapHUD* Hud = PlayerController->GetHUDWidget();
+
+	if (!Hud || !Hud->AmmoWidget)
+	{
+		return;
+	}
+
+	Hud->AmmoWidget->InventoryAmmo = AmmoLeft;
+}
+
+void AUERoadmapCharacter::ClipAmmoDelegate(int32 ClipAmmo)
+{
+	if (!PlayerController)
+	{
+		return;
+	}
+
+	URoadmapHUD* Hud = PlayerController->GetHUDWidget();
+
+	if (!Hud || !Hud->AmmoWidget)
+	{
+		return;
+	}
+
+	Hud->AmmoWidget->ClipAmmo = ClipAmmo;
+}
 
 AUERoadmapCharacter::AUERoadmapCharacter()
 {
@@ -42,13 +79,20 @@ void AUERoadmapCharacter::BeginPlay()
 	// Call the base class
 	Super::BeginPlay();
 
+	PlayerController = Cast<ARoadmapPlayerController>(Controller);
+
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (PlayerController)
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+	}
+
+	if (InventoryComponent)
+	{
+		InventoryComponent->OnAmmoChanged.AddDynamic(this, &AUERoadmapCharacter::InventoryAmmoDelegate);
 	}
 }
 

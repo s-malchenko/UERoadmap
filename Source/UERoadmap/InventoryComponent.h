@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
+// Delegate that will be called when stored ammo count has changed
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAmmoChanged, int32, AmmoLeft, int32, AmmoDelta);
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UEROADMAP_API UInventoryComponent : public UActorComponent
@@ -18,6 +20,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Storage)
 	int32 AmmoCapacity;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAmmoChanged OnAmmoChanged;
 
 	// Returns count of actually added ammo
 	UFUNCTION(BlueprintCallable, Category=Storage)
@@ -33,8 +38,4 @@ public:
 
 private:
 	int32 StoredAmmo = 0;
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 };

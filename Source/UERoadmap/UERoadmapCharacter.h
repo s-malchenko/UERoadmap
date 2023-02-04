@@ -43,8 +43,16 @@ class AUERoadmapCharacter : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, Category=Gameplay)
 	UInventoryComponent* InventoryComponent;
 
+	class ARoadmapPlayerController* PlayerController = nullptr;
+
 public:
 	AUERoadmapCharacter();
+
+	UFUNCTION()
+	void InventoryAmmoDelegate(int32 AmmoLeft, int32 AmmoDelta);
+
+	UFUNCTION()
+	void ClipAmmoDelegate(int32 ClipAmmo);
 
 protected:
 	virtual void BeginPlay() override;

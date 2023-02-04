@@ -18,6 +18,12 @@ int32 UInventoryComponent::AddAmmo(int32 Count)
 
 	Count = FGenericPlatformMath::Min(Count, AmmoCapacity - StoredAmmo);
 	StoredAmmo += Count;
+
+	if (Count != 0)
+	{
+		OnAmmoChanged.Broadcast(StoredAmmo, Count);
+	}
+
     return Count;
 }
 
@@ -25,16 +31,16 @@ int32 UInventoryComponent::RemoveAmmo(int32 Count)
 {
     Count = FGenericPlatformMath::Min(Count, StoredAmmo);
 	StoredAmmo -= Count;
+
+	if (Count != 0)
+	{
+		OnAmmoChanged.Broadcast(StoredAmmo, -Count);
+	}
+
 	return Count;
 }
 
 int32 UInventoryComponent::GetStoredAmmo() const
 {
     return StoredAmmo;
-}
-
-// Called when the game starts
-void UInventoryComponent::BeginPlay()
-{
-	Super::BeginPlay();
 }
