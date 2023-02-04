@@ -176,6 +176,7 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void UTP_WeaponComponent::OnReloaded()
 {
 	AmmoLeft += Character->GetInventoryComponent()->RemoveAmmo(ClipCapacity - AmmoLeft);
+	OnClipAmmoChanged.Broadcast(AmmoLeft);
 }
 
 bool UTP_WeaponComponent::IsReloading() const
