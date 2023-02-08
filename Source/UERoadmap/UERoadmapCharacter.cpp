@@ -50,6 +50,20 @@ void AUERoadmapCharacter::ClipAmmoDelegate(int32 ClipAmmo)
 	Hud->AmmoWidget->ClipAmmo = ClipAmmo;
 }
 
+void AUERoadmapCharacter::RefreshReticleWidget()
+{
+	if (PlayerController)
+	{
+		if (URoadmapHUD* HudWidget = PlayerController->GetHUDWidget())
+		{
+			if (HudWidget->ReticleWidget)
+			{
+				HudWidget->ReticleWidget->SetVisibility(bHasRifle ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+			}
+		}
+	}
+}
+
 AUERoadmapCharacter::AUERoadmapCharacter()
 {
 	// Character doesnt have a rifle at start
@@ -94,6 +108,8 @@ void AUERoadmapCharacter::BeginPlay()
 	{
 		InventoryComponent->OnAmmoChanged.AddDynamic(this, &AUERoadmapCharacter::InventoryAmmoDelegate);
 	}
+
+	RefreshReticleWidget();
 }
 
 void AUERoadmapCharacter::PostInitializeComponents()
@@ -154,6 +170,7 @@ void AUERoadmapCharacter::Look(const FInputActionValue& Value)
 void AUERoadmapCharacter::SetHasRifle(bool bNewHasRifle)
 {
 	bHasRifle = bNewHasRifle;
+	RefreshReticleWidget();
 }
 
 bool AUERoadmapCharacter::GetHasRifle()

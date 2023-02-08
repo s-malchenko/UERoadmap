@@ -2,6 +2,7 @@
 
 #include "RoadmapPlayerController.h"
 
+#include "EnhancedInputComponent.h"
 #include "UI/RoadmapHUD.h"
 
 URoadmapHUD *ARoadmapPlayerController::GetHUDWidget() const
@@ -20,6 +21,33 @@ void ARoadmapPlayerController::BeginPlay()
         if (HUDWidget)
         {
             HUDWidget->AddToViewport();
+            HUDWidget->SetUIInputEnabled(false);
         }
+    }
+}
+
+void ARoadmapPlayerController::SetupInputComponent()
+{
+    Super::SetupInputComponent();
+
+    if (!InputComponent)
+    {
+        return;
+    }
+
+    if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+	{
+		EnhancedInputComponent->BindAction(TogglePauseAction, ETriggerEvent::Triggered, this, &ARoadmapPlayerController::ToggleGamePause);
+	}
+}
+
+void ARoadmapPlayerController::ToggleGamePause()
+{
+    const bool bIsPaused = !IsPaused();
+    SetPause(bIsPaused);
+
+    if (HUDWidget)
+    {
+        bIsPaused ? HUDWidget->ShowPauseMenu() : HUDWidget->HidePauseMenu();
     }
 }

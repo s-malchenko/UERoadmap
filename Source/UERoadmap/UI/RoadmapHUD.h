@@ -17,4 +17,21 @@ class UEROADMAP_API URoadmapHUD : public UUserWidget
 public:
 	UPROPERTY(EditAnywhere, meta=(BindWidgetOptional))
 	class UAmmoWidget* AmmoWidget;
+
+	UPROPERTY(EditAnywhere, meta=(BindWidget))
+	UUserWidget* ReticleWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> PauseMenuClass;
+
+	UFUNCTION(BlueprintCallable)
+	void ShowPauseMenu();
+
+	UFUNCTION(BlueprintCallable)
+	void HidePauseMenu();
+
+	void SetUIInputEnabled(bool bEnabled);
+
+private:
+	TWeakObjectPtr<UUserWidget> PauseMenuWidget;
 };

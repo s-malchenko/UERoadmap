@@ -45,6 +45,8 @@ class AUERoadmapCharacter : public ACharacter
 
 	class ARoadmapPlayerController* PlayerController = nullptr;
 
+	void RefreshReticleWidget();
+
 public:
 	AUERoadmapCharacter();
 

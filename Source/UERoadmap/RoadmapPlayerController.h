@@ -14,14 +14,21 @@ class UEROADMAP_API ARoadmapPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=UI)
 	TSubclassOf<class URoadmapHUD> HUDWidgetClass;
 
 	UFUNCTION(BlueprintPure)
 	URoadmapHUD* GetHUDWidget() const;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
+	class UInputAction* TogglePauseAction;
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleGamePause();
+
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 
 	URoadmapHUD* HUDWidget = nullptr;
 };
