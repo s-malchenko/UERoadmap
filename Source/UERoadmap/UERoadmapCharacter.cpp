@@ -30,7 +30,7 @@ void AUERoadmapCharacter::InventoryAmmoDelegate(int32 AmmoLeft, int32 AmmoDelta)
 		return;
 	}
 
-	Hud->AmmoWidget->InventoryAmmo = AmmoLeft;
+	Hud->AmmoWidget->SetInventoryAmmo(AmmoLeft);
 }
 
 void AUERoadmapCharacter::ClipAmmoDelegate(int32 ClipAmmo)
@@ -47,7 +47,7 @@ void AUERoadmapCharacter::ClipAmmoDelegate(int32 ClipAmmo)
 		return;
 	}
 
-	Hud->AmmoWidget->ClipAmmo = ClipAmmo;
+	Hud->AmmoWidget->SetClipAmmo(ClipAmmo);
 }
 
 void AUERoadmapCharacter::RefreshReticleWidget()
