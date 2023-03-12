@@ -24,6 +24,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetHealth() const;
 
+	UFUNCTION(BlueprintCallable)
+	void SetHealth(float NewHealth);
+
 	UPROPERTY(BlueprintAssignable)
 	FOnDamageTaken OnDamageTaken;
 

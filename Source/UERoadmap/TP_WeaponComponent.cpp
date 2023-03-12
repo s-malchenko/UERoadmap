@@ -12,6 +12,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "TimerManager.h"
 
+static TAutoConsoleVariable<bool> CVarInfiniteAmmo(
+	TEXT("InfiniteAmmo"),
+	false,
+	TEXT("Infinite ammo for all rifles"),
+	ECVF_Cheat
+);
+
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
@@ -58,8 +65,11 @@ void UTP_WeaponComponent::Fire()
 		}
 	}
 
-	--AmmoLeft;
-	OnClipAmmoChanged.Broadcast(AmmoLeft);
+	if (!CVarInfiniteAmmo.GetValueOnGameThread())
+	{
+		--AmmoLeft;
+		OnClipAmmoChanged.Broadcast(AmmoLeft);
+	}
 
 	// Try and play a firing animation if specified
 	if (FireAnimation != nullptr)

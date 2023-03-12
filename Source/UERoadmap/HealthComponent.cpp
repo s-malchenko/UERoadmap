@@ -42,3 +42,14 @@ float UHealthComponent::GetHealth() const
 {
 	return Health;
 }
+
+void UHealthComponent::SetHealth(float NewHealth)
+{
+	if (NewHealth == Health)
+	{
+		return;
+	}
+
+	Health = NewHealth;
+	OnDamageTaken.Broadcast();
+}

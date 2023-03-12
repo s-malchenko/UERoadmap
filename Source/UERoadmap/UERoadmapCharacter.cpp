@@ -106,6 +106,11 @@ void AUERoadmapCharacter::BeginPlay()
 
 	if (InventoryComponent)
 	{
+		if (InventoryCapacityOverride >=0)
+		{
+			InventoryComponent->AmmoCapacity = InventoryCapacityOverride;
+		}
+
 		InventoryComponent->OnAmmoChanged.AddDynamic(this, &AUERoadmapCharacter::InventoryAmmoDelegate);
 	}
 

@@ -15,7 +15,7 @@ class UCameraComponent;
 class UAnimMontage;
 class USoundBase;
 
-UCLASS(config=Game)
+UCLASS(Config=Game)
 class AUERoadmapCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -42,6 +42,9 @@ class AUERoadmapCharacter : public ACharacter
 
 	UPROPERTY(VisibleDefaultsOnly, Category=Gameplay)
 	UInventoryComponent* InventoryComponent;
+
+	UPROPERTY(Config)
+	int32 InventoryCapacityOverride = -1;
 
 	class ARoadmapPlayerController* PlayerController = nullptr;
 
