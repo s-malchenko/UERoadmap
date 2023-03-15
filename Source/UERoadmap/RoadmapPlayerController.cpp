@@ -3,7 +3,15 @@
 #include "RoadmapPlayerController.h"
 
 #include "EnhancedInputComponent.h"
+#include "RoadmapCheatManager.h"
 #include "UI/RoadmapHUD.h"
+
+
+ARoadmapPlayerController::ARoadmapPlayerController(const FObjectInitializer &ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    CheatClass = URoadmapCheatManager::StaticClass();
+}
 
 URoadmapHUD *ARoadmapPlayerController::GetHUDWidget() const
 {

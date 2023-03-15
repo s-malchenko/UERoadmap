@@ -14,6 +14,8 @@ class UEROADMAP_API ARoadmapPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
+	ARoadmapPlayerController(const FObjectInitializer& ObjectInitializer);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=UI)
 	TSubclassOf<class URoadmapHUD> HUDWidgetClass;
 
