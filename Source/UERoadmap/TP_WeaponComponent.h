@@ -16,19 +16,22 @@ class UEROADMAP_API UTP_WeaponComponent : public USkeletalMeshComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	UPROPERTY(EditAnywhere)
+	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	int32 ClipCapacity;
 
 	/** Count of ammo left in clip */
-	UPROPERTY(BlueprintReadOnly, Category=Gameplay)
+	UPROPERTY(BlueprintReadOnly, Category = Gameplay)
 	int32 AmmoLeft;
 
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
+	/** Projectile class to spawn. No projectile class means hitscan weapon */
+	UPROPERTY(EditAnywhere, Category = Projectile)
 	TSubclassOf<class AUERoadmapProjectile> ProjectileClass;
 
 	/** Sound to play while attempting to fire empty weapon */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	USoundBase* EmptyClipSound;
 
 	/** AnimMontage to play each time we fire */

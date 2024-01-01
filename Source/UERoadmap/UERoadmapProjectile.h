@@ -35,6 +35,6 @@ public:
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 
 	UPROPERTY(EditAnywhere)
-	float Damage;
+	float Damage = 0;
 };
 

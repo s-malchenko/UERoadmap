@@ -61,7 +61,36 @@ void UTP_WeaponComponent::Fire()
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 			// Spawn the projectile at the muzzle
-			World->SpawnActor<AUERoadmapProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			AUERoadmapProjectile *Projectile = World->SpawnActor<AUERoadmapProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			if (Projectile != nullptr)
+			{
+				Projectile->Damage = this->Damage;
+			}
+		}
+	}
+	else // no projectile class - apply damage through hitscan
+	{
+		FVector Start;
+		FRotator Direction;
+		Character->GetController()->GetActorEyesViewPoint(Start, Direction);
+		const FVector End = Start + Direction.Vector() * 3000;
+		FHitResult Hit = {};
+		GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECollisionChannel::ECC_Visibility);
+		if (AActor* HitActor = Hit.GetActor())
+		{
+			auto* HitComp = Hit.GetComponent();
+			if (HitComp && HitComp->IsSimulatingPhysics())
+			{
+				HitComp->AddImpulseAtLocation(Direction.Vector() * Damage * 7000.0f, Hit.Location);
+			}
+
+			UGameplayStatics::ApplyDamage(
+				HitActor,
+				Damage,
+				Character->GetInstigatorController(),
+				Character,
+				UDamageType::StaticClass()
+			);
 		}
 	}
 
